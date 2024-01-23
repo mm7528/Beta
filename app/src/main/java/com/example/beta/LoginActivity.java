@@ -12,13 +12,19 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
+
+    FirebaseDatabase fbDB;
+    DatabaseReference refUsers;
     Button login1,signup1;
     User user;
     EditText editTextPassword,editTextEmail;
@@ -31,6 +37,8 @@ public class LoginActivity extends AppCompatActivity {
         signup1 = (Button) findViewById(R.id.register1);
         login1 = (Button) findViewById(R.id.login1);
         mAuth =FirebaseAuth.getInstance();
+        fbDB=FirebaseDatabase.getInstance();
+        refUsers = fbDB.getReference("Users");
 
         signup1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,6 +157,20 @@ public class LoginActivity extends AppCompatActivity {
                                     .show();
                             String uid=mAuth.getUid();
                             user=new User(uid,false);
+                            refUsers.child(uid).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful())
+                                    {
+                                        Toast.makeText(LoginActivity.this, "successfully uploaded user", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(LoginActivity.this, "failed to connect to database", Toast.LENGTH_SHORT).show();
+                                }
+                            });
 
                         } else {
 
