@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
 
 public class AddRecipe extends AppCompatActivity {
@@ -19,7 +20,8 @@ public class AddRecipe extends AppCompatActivity {
         ingredients = (EditText) findViewById(R.id.ingredients);
         instructions = (EditText) findViewById(R.id.instructions);
 
+    }
 
-
+    public void newRecipe(View view) {
     }
 }
