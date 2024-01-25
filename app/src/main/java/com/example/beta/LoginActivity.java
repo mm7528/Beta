@@ -1,5 +1,7 @@
 package com.example.beta;
 
+import com.example.beta.Manager;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,18 +21,15 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import com.example.beta.Manager;
-
-
 public class LoginActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
-
     FirebaseDatabase fbDB;
     DatabaseReference refUsers;
     Button login1,signup1;
     User user;
     EditText editTextPassword,editTextEmail;
+    Manager manager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +41,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuth =FirebaseAuth.getInstance();
         fbDB=FirebaseDatabase.getInstance();
         refUsers = fbDB.getReference("Users");
+        manager=new Manager();
 
         signup1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,6 +66,7 @@ public class LoginActivity extends AppCompatActivity {
         {
             Toast.makeText(this, "already connected uid: " + mAuth.getUid(), Toast.LENGTH_SHORT).show();
             Intent si = new Intent(LoginActivity.this,MainActivity.class);
+            si.putExtra("userId",mAuth.getUid());
             startActivity(si);
         }
     }*/
@@ -103,10 +104,10 @@ public class LoginActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     Toast.makeText(getApplicationContext(), "Login successful!!",
                                             Toast.LENGTH_LONG).show();
-                                    //user.setConnected(true);
 
+                                    String uid = mAuth.getUid();
                                     Intent si = new Intent(LoginActivity.this,MainActivity.class);
-                                    si.putExtra("newuser",false);
+                                    si.putExtra("userId",uid);
                                     startActivity(si);
                                 }
 
@@ -165,7 +166,7 @@ public class LoginActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful())
                                     {
-
+                                        manager.registeredUsers.add(user);
                                         Toast.makeText(LoginActivity.this, "successfully uploaded user", Toast.LENGTH_SHORT).show();
 
                                     }
