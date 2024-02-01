@@ -1,5 +1,7 @@
 package com.example.beta;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import com.example.beta.Manager;
 
 import androidx.annotation.NonNull;
@@ -8,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,18 +21,23 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthRegistrar;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
-    FirebaseDatabase fbDB;
-    DatabaseReference refUsers;
+    public static FirebaseUser fbuser;
+    public static FirebaseDatabase fbDB;
+    public static DatabaseReference refUsers;
     Button login1,signup1;
     User user;
     EditText editTextPassword,editTextEmail;
-    Manager manager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuth =FirebaseAuth.getInstance();
         fbDB=FirebaseDatabase.getInstance();
         refUsers = fbDB.getReference("Users");
-        manager=new Manager();
+        fbuser = mAuth.getCurrentUser();
 
         signup1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +74,6 @@ public class LoginActivity extends AppCompatActivity {
         {
             Toast.makeText(this, "already connected uid: " + mAuth.getUid(), Toast.LENGTH_SHORT).show();
             Intent si = new Intent(LoginActivity.this,MainActivity.class);
-            si.putExtra("userId",mAuth.getUid());
             startActivity(si);
         }
     }*/
@@ -104,10 +111,8 @@ public class LoginActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     Toast.makeText(getApplicationContext(), "Login successful!!",
                                             Toast.LENGTH_LONG).show();
-
-                                    String uid = mAuth.getUid();
+                                    fbuser=mAuth.getCurrentUser();
                                     Intent si = new Intent(LoginActivity.this,MainActivity.class);
-                                    si.putExtra("userId",uid);
                                     startActivity(si);
                                 }
 
@@ -159,6 +164,7 @@ public class LoginActivity extends AppCompatActivity {
                                             "Registration successful!",
                                             Toast.LENGTH_LONG)
                                     .show();
+                            fbuser=mAuth.getCurrentUser();
                             String uid=mAuth.getUid();
                             user=new User(uid,false);
                             refUsers.child(uid).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -166,7 +172,7 @@ public class LoginActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful())
                                     {
-                                        manager.registeredUsers.add(user);
+                                        //manager.registeredUsers.add(user);
                                         Toast.makeText(LoginActivity.this, "successfully uploaded user", Toast.LENGTH_SHORT).show();
 
                                     }

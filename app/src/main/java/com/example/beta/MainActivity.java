@@ -19,26 +19,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mAuth=FirebaseAuth.getInstance();
         gi = getIntent();
-        uid = gi.getExtras().getString("userId","1");
+        uid = LoginActivity.fbuser.getUid();
 
     }
 
     public void showRecipes(View view) {
         Intent si = new Intent(MainActivity.this,MyRecipes.class);
-        si.putExtra("userId",uid);
         startActivity(si);
 
     }
 
     public void addRecipe(View view) {
         Intent si = new Intent(MainActivity.this,AddRecipe.class);
-        si.putExtra("userId",uid);
         startActivity(si);
     }
 
     public void scannedRecipes(View view) {
         Intent si = new Intent(MainActivity.this,ScannedRecipes.class);
-        si.putExtra("userId",uid);
         startActivity(si);
     }
 
