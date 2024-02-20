@@ -1,10 +1,10 @@
 package com.example.beta;
-
+import java.util.UUID;
 import java.util.List;
 
 public class Recipe {
     private String keyId;
-    int type;
+    String type;
     String title;
     List<String> ingredients;
     List<String> instructions;
@@ -13,10 +13,14 @@ public class Recipe {
 
     public Recipe()
     {
+        UUID uuid = UUID.randomUUID();
+        String uuidString = uuid.toString();
+        this.keyId=uuidString;
+
 
     }
 
-    public Recipe(int type,String title,String uid,String storageId,List<String>ingredients,List<String>instructions)
+    public Recipe(String type,String title,String uid,String storageId,List<String>ingredients,List<String>instructions)
     {
         this.type=type;
         this.title=title;
@@ -26,7 +30,7 @@ public class Recipe {
         this.instructions=instructions;
     }
 
-    public int getType()
+    public String getType()
     {
         return type;
     }
@@ -73,7 +77,7 @@ public class Recipe {
         this.title = title;
     }
 
-    public void setType(int type) {
+    public void setType(String type) {
         this.type = type;
     }
 

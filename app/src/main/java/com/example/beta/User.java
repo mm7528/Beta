@@ -35,6 +35,13 @@ public class User {
         this.isConnected=isConnected;
     }
 
+    public User(String uid, Boolean isConnected,List<String>types)
+    {
+        this.uid=uid;
+        this.types=types;
+        this.isConnected=isConnected;
+    }
+
     public Boolean getConnected() {
         return isConnected;
     }
