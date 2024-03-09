@@ -1,6 +1,7 @@
 package com.example.beta;
 
 import static com.example.beta.AddRecipe.refRecipes;
+import static com.example.beta.LoginActivity.fbDB;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,27 +24,30 @@ public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemCl
 {
 
     private ListView lVcustom;
-    private ArrayList<String> names, types;
+    public static ArrayList<String> names, types;
     private int[] pics;
     Intent gi;
-    //private com.example.beta.CustomAdapter customAdapter;
+    private CustomAdapter customAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_recipes);
+        refRecipes=fbDB.getReference("Recipes");
         gi= getIntent();
         Toast.makeText(this, "line 34", Toast.LENGTH_SHORT).show();
-        //initAll();
-        //customAdapter = new CustomAdapter(this, pics, names);
-        //lVcustom.setAdapter(customAdapter);
-        //lVcustom.setOnItemClickListener(this);
-        //lVcustom.setOnItemLongClickListener(this);
+        initAll();
+
+        customAdapter = new CustomAdapter(this, pics, names);
+        lVcustom.setOnItemClickListener(this);
+        lVcustom.setOnItemLongClickListener(this);
+
+
     }
 
     private void initAll(){
         lVcustom = findViewById(R.id.lv);
-
+        names=new ArrayList<>();
         refRecipes.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -53,14 +57,23 @@ public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemCl
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String userName = snapshot.child("title").getValue(String.class);
                     names.add(userName);
+                    Toast.makeText(MyRecipes.this, ""+names.size(), Toast.LENGTH_SHORT).show();
+                    customAdapter.setStringsList(names);
+                    lVcustom.setAdapter(customAdapter);
+
+
                 }
-                //adapter.notifyDataSetChanged();
+
             }
+
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(MyRecipes.this, "an error occurred please try again.", Toast.LENGTH_SHORT).show();
             }
         });
+
+
     }
 
     @Override

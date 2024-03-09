@@ -8,18 +8,20 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 
 public class CustomAdapter extends BaseAdapter {
 
     private Context context;
-    private int images[];
+    //private int images[];
     private ArrayList<String>  stringsList;
     private LayoutInflater inflater;
 
-    public CustomAdapter(Context context, int[] images, ArrayList<String> stringsList) {
+    public CustomAdapter(MyRecipes context, int[] images, ArrayList<String> stringsList) {
         this.context = context;
-        this.images = images;
+        //this.images = images;
         this.stringsList = stringsList;
         inflater = (LayoutInflater.from(context));
     }
@@ -39,13 +41,18 @@ public class CustomAdapter extends BaseAdapter {
         return position;
     }
 
+    public void setStringsList(ArrayList<String> stringsList) {
+        this.stringsList = stringsList;
+    }
+
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         view = inflater.inflate(R.layout.custom_lv_layout, parent, false);
         ImageView img = (ImageView) view.findViewById(R.id.iV);
         TextView str = (TextView) view.findViewById(R.id.tV);
         str.setText(stringsList.get(position));
-        img.setImageResource(images[position]);
+        //img.setImageResource(images[position]);
+        img.setImageResource(R.drawable.table);
         return view;
     }
 }

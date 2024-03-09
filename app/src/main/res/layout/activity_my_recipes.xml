@@ -4,21 +4,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MyRecipes">
 
-    <Space
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="20"
+        android:gravity="center"
+        android:text="Recipes"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
-    <ListView
-        android:id="@+id/lv"
-        android:layout_width="300dp"
-        android:layout_height="match_parent"
-        android:layout_weight="5" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="80"
+        android:orientation="horizontal">
 
-    <Space
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1" />
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2" />
+
+        <ListView
+            android:id="@+id/lv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="98">
+
+        </ListView>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
 </LinearLayout>
