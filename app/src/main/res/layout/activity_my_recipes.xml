@@ -4,4 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MyRecipes"/>
+    tools:context=".MyRecipes">
+
+    <Space
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+    <ListView
+        android:id="@+id/lv"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_weight="5" />
+
+    <Space
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+</LinearLayout>
