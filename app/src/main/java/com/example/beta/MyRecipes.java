@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -24,9 +25,9 @@ public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemCl
 {
 
     private ListView lVcustom;
-    public static ArrayList<String> names, types;
+    public static ArrayList<String> names, ids;
     private int[] pics;
-    Intent gi;
+    Intent gi,si;
     private CustomAdapter customAdapter;
 
     @Override
@@ -48,6 +49,7 @@ public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemCl
     private void initAll(){
         lVcustom = findViewById(R.id.lv);
         names=new ArrayList<>();
+        ids = new ArrayList<>();
         refRecipes.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -57,6 +59,8 @@ public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemCl
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String userName = snapshot.child("title").getValue(String.class);
                     names.add(userName);
+                    String keyIds = snapshot.child("keyId").getValue(String.class);
+                    ids.add(keyIds);
                     Toast.makeText(MyRecipes.this, ""+names.size(), Toast.LENGTH_SHORT).show();
                     customAdapter.setStringsList(names);
                     lVcustom.setAdapter(customAdapter);
@@ -78,11 +82,30 @@ public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemCl
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent si = new Intent(MyRecipes.this,ShowRecipe.class);
+        si.putExtra("keyId",ids.get(position));
+        startActivity(si);
 
     }
 
     @Override
-    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long i) {
+        String id =ids.get(position);
+        Query keyIdQuery = refRecipes.orderByChild("keyId").equalTo(id);
+
+        keyIdQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot idSnapshot: dataSnapshot.getChildren()) {
+                    idSnapshot.getRef().removeValue();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(MyRecipes.this, "something failed while trying to delete item", Toast.LENGTH_SHORT).show();
+            }
+        });
         return false;
     }
 }
