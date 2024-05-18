@@ -2,6 +2,7 @@ package com.example.beta;
 
 import static com.example.beta.AddRecipe.refRecipes;
 import static com.example.beta.LoginActivity.fbDB;
+import static com.example.beta.LoginActivity.fbuser;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -36,7 +37,6 @@ public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemCl
         setContentView(R.layout.activity_my_recipes);
         refRecipes=fbDB.getReference("Recipes");
         gi= getIntent();
-        Toast.makeText(this, "line 34", Toast.LENGTH_SHORT).show();
         initAll();
 
         customAdapter = new CustomAdapter(this, pics, names);
@@ -55,15 +55,19 @@ public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemCl
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //names.clear();
                 // Iterate through the user data and extract names
-                Toast.makeText(MyRecipes.this, "line 50", Toast.LENGTH_SHORT).show();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String userName = snapshot.child("title").getValue(String.class);
-                    names.add(userName);
-                    String keyIds = snapshot.child("keyId").getValue(String.class);
-                    ids.add(keyIds);
-                    Toast.makeText(MyRecipes.this, ""+names.size(), Toast.LENGTH_SHORT).show();
-                    customAdapter.setStringsList(names);
-                    lVcustom.setAdapter(customAdapter);
+
+                    String uid =snapshot.child("uid").getValue(String.class);
+                    if(uid.equals(fbuser.getUid()))
+                    {
+                        String userName = snapshot.child("title").getValue(String.class);
+                        names.add(userName);
+                        String keyIds = snapshot.child("keyId").getValue(String.class);
+                        ids.add(keyIds);
+                        customAdapter.setStringsList(names);
+                        lVcustom.setAdapter(customAdapter);
+                    }
+
 
 
                 }

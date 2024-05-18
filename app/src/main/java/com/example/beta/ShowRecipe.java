@@ -4,6 +4,7 @@ import static com.example.beta.AddRecipe.refRecipes;
 import static com.example.beta.LoginActivity.fbDB;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -23,41 +25,61 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class ShowRecipe extends AppCompatActivity {
     private TextView instructions,ingredients,title;
     private TextToSpeech textToSpeech;
     private Button btn;
+    private Intent gi;
 
-    @SuppressLint("MissingInflatedId") // dan was here
+    private String  recipeTitle, rIngredients, rInstructions;
+
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_recipe);
         refRecipes=fbDB.getReference("Recipes");
-        instructions=(TextView) findViewById(R.id.textView6);
+        instructions=(TextView) findViewById(R.id.textView8);
         ingredients =(TextView) findViewById(R.id.textView7);
-        title = (TextView) findViewById(R.id.textView8);
+        title = (TextView) findViewById(R.id.textView6);
         btn =(Button)findViewById(R.id.read);
-        /*refRecipes.addValueEventListener(new ValueEventListener() {
+        gi=getIntent();
+        String id =gi.getStringExtra("keyId");
+
+        refRecipes.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Recipe recipe = dataSnapshot.getValue(Recipe.class);
-                title.setText(recipe.getTitle());
-                ingredients.setText(lstToStr(recipe.getIngredients()));
-                instructions.setText(lstToStr(recipe.getInstructions()));
-                System.out.println(recipe);
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                // Iterate through the user data and extract names
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String keyId = snapshot.child("keyId").getValue(String.class);
+                    if(keyId.equals(id))
+                    {
+                        recipeTitle=snapshot.child("title").getValue(String.class);
+                        title.setText(recipeTitle);
+                        List<String> recipeIngredients=(List<String>) snapshot.child("ingredients").getValue();
+                        rIngredients=lstToStr(recipeIngredients);
+                        ingredients.setText(rIngredients);
+                        List<String> recipeInstructions=(List<String>) snapshot.child("instructions").getValue();
+                        rInstructions=lstToStr(recipeInstructions);
+                        instructions.setText(rInstructions);
+
+                    }
+
+                }
 
             }
 
+
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(ShowRecipe.this, "The read failed: " + databaseError.getCode(), Toast.LENGTH_SHORT).show();
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(ShowRecipe.this, "an error occurred please try again.", Toast.LENGTH_SHORT).show();
             }
+        });
 
-        });*/
-
-       /* textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+        textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
                 if(status != TextToSpeech.ERROR)
@@ -77,12 +99,14 @@ public class ShowRecipe extends AppCompatActivity {
                 }
                 else
                 {
-                    textToSpeech.speak(title.getText().toString(),TextToSpeech.QUEUE_FLUSH,null,null);
-                    textToSpeech.speak(ingredients.getText().toString(),TextToSpeech.QUEUE_FLUSH,null,null);
                     textToSpeech.speak(instructions.getText().toString(),TextToSpeech.QUEUE_FLUSH,null,null);
+                    textToSpeech.speak(ingredients.getText().toString(),TextToSpeech.QUEUE_FLUSH,null,null);
+                    textToSpeech.speak(title.getText().toString(),TextToSpeech.QUEUE_FLUSH,null,null);
+
+
                 }
             }
-        });*/
+        });
     }
 
     private String lstToStr(List<String> lst)
@@ -91,6 +115,7 @@ public class ShowRecipe extends AppCompatActivity {
         for(int i=0;i<lst.size();i++)
         {
             str+=lst.get(i);
+            str+="\n";
         }
         return str;
     }
