@@ -26,9 +26,9 @@ public class LoginActivity extends AppCompatActivity {
     public static FirebaseUser fbuser;
     public static FirebaseDatabase fbDB;
     public static DatabaseReference refUsers;
-    Button login1,signup1;
-    User user;
-    EditText editTextPassword,editTextEmail;
+    private Button login1,signup1;
+    private User user;
+    private EditText editTextPassword,editTextEmail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -4,10 +4,10 @@ import java.util.List;
 
 public class Recipe {
     private String keyId;
-    String type;
-    String title;
-    List<String> ingredients;
-    List<String> instructions;
+    private String type;
+    private String title;
+    private List<String> ingredients;
+    private List<String> instructions;
     private String uid;
     private String storageId;
 
@@ -26,6 +26,16 @@ public class Recipe {
         this.title=title;
         this.uid=uid;
         this.storageId=storageId;
+        this.ingredients=ingredients;
+        this.instructions=instructions;
+    }
+
+    public Recipe(String type,String title,String uid,List<String>ingredients,List<String>instructions)
+    {
+        this.type=type;
+        this.title=title;
+        this.uid=uid;
+        this.storageId="";
         this.ingredients=ingredients;
         this.instructions=instructions;
     }

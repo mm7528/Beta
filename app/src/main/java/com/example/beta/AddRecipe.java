@@ -34,16 +34,16 @@ import java.util.Map;
 
 public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
-    Recipe recipe = new Recipe();
-    EditText title,ingredients,instructions;
+    private Recipe recipe = new Recipe();
+    private EditText title,ingredients,instructions;
     public List<String> options;
-    String uid,str;
+    private String uid,str;
     private boolean connected;
-    Intent gi;
-    Spinner spin;
+    private Intent gi;
+    private Spinner spin;
     private String[] temp;
     private List<String>lines;
-    AlertDialog.Builder adb;
+    private AlertDialog.Builder adb;
     public static DatabaseReference refRecipes;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -27,7 +27,7 @@ public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemCl
     private ListView lVcustom;
     public static ArrayList<String> names, ids;
     private int[] pics;
-    Intent gi,si;
+    private Intent gi;
     private CustomAdapter customAdapter;
 
     @Override

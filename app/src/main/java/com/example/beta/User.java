@@ -15,9 +15,9 @@ import java.util.ListIterator;
 import java.util.Map;
 
 public class User {
-    String uid;
-    List<String> types;
-    Boolean isConnected;
+    private String uid;
+    private List<String> types;
+    private Boolean isConnected;
 
     public User()
     {
