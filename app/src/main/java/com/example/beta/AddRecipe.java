@@ -38,6 +38,7 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
     private EditText title,ingredients,instructions;
     public List<String> options;
     private String uid,str;
+    private String recipeTitle,recipeIngredients,recipeInstructions;
     private boolean connected;
     private Intent gi;
     private Spinner spin;
@@ -53,7 +54,18 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
         ingredients = (EditText) findViewById(R.id.ingredients);
         instructions = (EditText) findViewById(R.id.instructions);
         spin =(Spinner) findViewById(R.id.spinner);
+        //checking if recipe was scanned
         gi= getIntent();
+        recipeTitle=gi.getStringExtra("title");
+
+        if(recipeTitle!=null){
+            recipeIngredients=gi.getStringExtra("ingredients");
+            recipeInstructions=gi.getStringExtra("instructions");
+            title.setText(recipeTitle);
+            ingredients.setText(recipeIngredients);
+            instructions.setText(recipeInstructions);
+        }
+
         uid = fbuser.getUid();
         refRecipes= fbDB.getReference("Recipes");
         adb=new AlertDialog.Builder(this);
@@ -91,7 +103,6 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
                         options= (List<String>) ((Map<?, ?>) task.getResult().getValue()).get("types");
                         connected = (Boolean) ((Map<?, ?>) task.getResult().getValue()).get("connected");
                         options.add("other");
-                        Toast.makeText(AddRecipe.this, String.valueOf(options), Toast.LENGTH_SHORT).show();
                         spin.setOnItemSelectedListener(AddRecipe.this);
 
                         ArrayAdapter<String> adp = new ArrayAdapter<String>(AddRecipe.this,
@@ -99,7 +110,7 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
                         spin.setAdapter(adp);
 
                     }
-                    Toast.makeText(AddRecipe.this, String.valueOf(task.getResult().getValue()), Toast.LENGTH_LONG).show();
+
                 }
             }
         });
@@ -180,7 +191,6 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
 
         }
         recipe.setType(options.get(position));
-        Toast.makeText(this, options.get(position), Toast.LENGTH_SHORT).show();
 
     }
 
@@ -195,7 +205,6 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
         for(int i=0;i<arr.length;i++)
         {
             lines.add(arr[i]);
-            Toast.makeText(this, arr[i], Toast.LENGTH_SHORT).show();
         }
         return lines;
     }

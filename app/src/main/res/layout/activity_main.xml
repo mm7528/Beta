@@ -62,6 +62,19 @@
             android:layout_weight="1" />
 
         <Button
+            android:id="@+id/button8"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_weight="1"
+            android:onClick="scan"
+            android:text="Scan a Recipe" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
             android:id="@+id/button7"
             android:layout_width="match_parent"
             android:layout_height="5dp"

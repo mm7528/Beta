@@ -97,11 +97,14 @@ public class ShowRecipe extends AppCompatActivity {
                 {
                     Toast.makeText(getApplicationContext(), "please enter text", Toast.LENGTH_LONG).show();
                 }
+                else if(textToSpeech.isSpeaking())
+                {
+                    textToSpeech.stop();
+                }
                 else
                 {
-                    textToSpeech.speak(instructions.getText().toString(),TextToSpeech.QUEUE_FLUSH,null,null);
-                    textToSpeech.speak(ingredients.getText().toString(),TextToSpeech.QUEUE_FLUSH,null,null);
-                    textToSpeech.speak(title.getText().toString(),TextToSpeech.QUEUE_FLUSH,null,null);
+                    String speak=title.getText().toString()+"\ningredients\n"+ingredients.getText().toString()+"\ninstructions\n"+instructions.getText().toString();
+                    textToSpeech.speak(speak,TextToSpeech.QUEUE_FLUSH,null,null);
 
 
                 }

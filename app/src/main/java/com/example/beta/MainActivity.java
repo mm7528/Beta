@@ -44,4 +44,9 @@ public class MainActivity extends AppCompatActivity {
         Intent si = new Intent(MainActivity.this,LoginActivity.class);
         startActivity(si);
     }
+
+    public void scan(View view) {
+        Intent si = new Intent(MainActivity.this,ScanRecipe.class);
+        startActivity(si);
+    }
 }

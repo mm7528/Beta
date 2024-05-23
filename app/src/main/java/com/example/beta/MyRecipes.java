@@ -92,6 +92,8 @@ public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemCl
 
     }
 
+
+    //FUNCTION IN NEED OF FIXING
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long i) {
         String id =ids.get(position);
