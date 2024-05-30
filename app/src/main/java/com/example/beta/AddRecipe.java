@@ -8,22 +8,32 @@ import static java.nio.file.Paths.get;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -31,6 +41,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
@@ -46,6 +57,14 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
     private List<String>lines;
     private AlertDialog.Builder adb;
     public static DatabaseReference refRecipes;
+
+    private Button upload;
+    public Uri imageUri;
+    private FirebaseStorage storage;
+    private StorageReference storageReference;
+    private StorageReference imageRef;
+
+    private ActivityResultLauncher<String> mGetContent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,10 +73,16 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
         ingredients = (EditText) findViewById(R.id.ingredients);
         instructions = (EditText) findViewById(R.id.instructions);
         spin =(Spinner) findViewById(R.id.spinner);
+        upload=(Button)findViewById(R.id.button9);
+
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
+        //in order to check
+        imageRef=null;
+
         //checking if recipe was scanned
         gi= getIntent();
         recipeTitle=gi.getStringExtra("title");
-
         if(recipeTitle!=null){
             recipeIngredients=gi.getStringExtra("ingredients");
             recipeInstructions=gi.getStringExtra("instructions");
@@ -115,6 +140,23 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
             }
         });
 
+        mGetContent=registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
+            @Override
+            public void onActivityResult(Uri o) {
+                imageUri=o;
+                uploadPicture();
+            }
+        });
+
+        upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mGetContent.launch("image/*");
+            }
+
+
+        });
+
     }
 
     public void newRecipe(View view) {
@@ -134,6 +176,10 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
             lines = arrToList(temp);
             recipe.setInstructions(lines);
             recipe.setUid(uid);
+            if(imageUri==null||imageRef==null)
+            {
+                recipe.setStorageId("recipeDefault.png");
+            }
 
 
             refRecipes.child(recipe.getKeyId()).setValue(recipe).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -196,6 +242,29 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+
+
+    private void uploadPicture() {
+        String id =fbuser.getUid();
+        final String randomKey = UUID.randomUUID().toString();
+        String storageRef=id+"/"+"recipePhotos"+"/"+randomKey;
+        imageRef = storageReference.child(storageRef);
+        recipe.setStorageId(storageRef);
+        imageRef.putFile(imageUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Toast.makeText(getApplicationContext(), "image uploaded", Toast.LENGTH_LONG).show();
+                    }
+                })      .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplicationContext(), "Failed to upload", Toast.LENGTH_LONG).show();
+                    }
+                });
 
     }
 

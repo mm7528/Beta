@@ -11,7 +11,6 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -24,8 +23,6 @@ import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +39,6 @@ import com.google.mlkit.vision.text.TextRecognition;
 import com.google.mlkit.vision.text.TextRecognizer;
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -52,7 +48,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 public class ScanRecipe extends AppCompatActivity {
 
@@ -70,7 +65,7 @@ public class ScanRecipe extends AppCompatActivity {
             "2\n" +
             "3\n" +
             "please note that the recipe must include all the mentioned characters\n" +
-            "such as ':' and the words 'Instructions' and 'Ingredients' with big I's";
+            "such as ':' and the words 'Instructions' and 'Ingredients' with capital I's";
     private final int OPEN_CAMERA_CODE = 1234;
     private final int TAKE_A_PIC_CODE = 2345;
     private TextRecognizer textRecognizer;
@@ -229,7 +224,7 @@ public class ScanRecipe extends AppCompatActivity {
         Date date = Calendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("yyyymmddhhmmss");
         lastFull = dateFormat.format(date);
-        StorageReference ref = storageReference.child(fbuser.getUid()+lastFull+".jpg");
+        StorageReference ref = storageReference.child(fbuser.getUid()+"/"+"scanned/"+lastFull+".jpg");
         Bitmap imageBitmap = BitmapFactory.decodeFile(currentPath);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);

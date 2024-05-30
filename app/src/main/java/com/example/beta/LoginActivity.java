@@ -22,7 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginActivity extends AppCompatActivity {
 
-    FirebaseAuth mAuth;
+    private FirebaseAuth mAuth;
     public static FirebaseUser fbuser;
     public static FirebaseDatabase fbDB;
     public static DatabaseReference refUsers;

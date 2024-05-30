@@ -18,11 +18,26 @@
             android:layout_width="match_parent"
             android:layout_height="50dp" />
 
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:fontFamily="sans-serif-light"
+            android:lineSpacingExtra="8sp"
+            android:text="here you can see all of your scanned recipes!"
+            android:textAlignment="center"
+            android:textSize="16sp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="518dp"
-            android:layout_weight="2" />
+            android:layout_weight="2"
+            android:rotation="90" />
 
         <Space
             android:layout_width="match_parent"
@@ -31,7 +46,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="5dp"
+        android:layout_height="2dp"
         android:layout_weight="0.5"
         android:orientation="horizontal">
 
@@ -41,10 +56,11 @@
             android:layout_weight="0.5" />
 
         <Button
-            android:id="@+id/button4"
+            android:id="@+id/prev"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:onClick="prev"
             android:text="previous" />
 
         <Space
@@ -53,10 +69,11 @@
             android:layout_weight="1.5" />
 
         <Button
-            android:id="@+id/button5"
+            android:id="@+id/next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:onClick="next"
             android:text="next" />
 
         <Space

@@ -18,30 +18,33 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
-public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemClickListener,
-        AdapterView.OnItemLongClickListener
-{
+public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private ListView lVcustom;
     public static ArrayList<String> names, ids;
-    private int[] pics;
-    private Intent gi;
+    public static ArrayList<StorageReference>images;
     private CustomAdapter customAdapter;
+    private FirebaseStorage storage;
+    private StorageReference storageRef;
+    private StorageReference imageRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_recipes);
         refRecipes=fbDB.getReference("Recipes");
-        gi= getIntent();
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
         initAll();
 
-        customAdapter = new CustomAdapter(this, pics, names);
+        customAdapter = new CustomAdapter(this);
         lVcustom.setOnItemClickListener(this);
-        lVcustom.setOnItemLongClickListener(this);
+        //lVcustom.setOnItemLongClickListener(this);
 
 
     }
@@ -50,10 +53,10 @@ public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemCl
         lVcustom = findViewById(R.id.lv);
         names=new ArrayList<>();
         ids = new ArrayList<>();
+        images=new ArrayList<>();
         refRecipes.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //names.clear();
                 // Iterate through the user data and extract names
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
@@ -64,6 +67,10 @@ public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemCl
                         names.add(userName);
                         String keyIds = snapshot.child("keyId").getValue(String.class);
                         ids.add(keyIds);
+                        String storageId = snapshot.child("storageId").getValue(String.class);
+                        imageRef=storageRef.child(storageId);
+                        images.add(imageRef);
+                        customAdapter.setImages(images);
                         customAdapter.setStringsList(names);
                         lVcustom.setAdapter(customAdapter);
                     }
@@ -93,8 +100,9 @@ public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemCl
     }
 
 
+
     //FUNCTION IN NEED OF FIXING
-    @Override
+   /* @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long i) {
         String id =ids.get(position);
         Query keyIdQuery = refRecipes.orderByChild("keyId").equalTo(id);
@@ -113,5 +121,5 @@ public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemCl
             }
         });
         return false;
-    }
+    }*/
 }
