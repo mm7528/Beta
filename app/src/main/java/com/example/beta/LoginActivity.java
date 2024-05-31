@@ -58,16 +58,6 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-   /* @Override
-    protected void onStart() {
-        super.onStart();
-        if(mAuth.getCurrentUser()!=null)
-        {
-            Toast.makeText(this, "already connected uid: " + mAuth.getUid(), Toast.LENGTH_SHORT).show();
-            Intent si = new Intent(LoginActivity.this,MainActivity.class);
-            startActivity(si);
-        }
-    }*/
 
     private void loginUserAccount() {
         String email,password;

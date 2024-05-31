@@ -1,18 +1,10 @@
 package com.example.beta;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
+
 
 public class User {
     private String uid;

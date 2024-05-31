@@ -3,7 +3,6 @@ package com.example.beta;
 import static com.example.beta.AddRecipe.refRecipes;
 import static com.example.beta.LoginActivity.fbDB;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,12 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -32,7 +28,6 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class ShowRecipe extends AppCompatActivity {
     private TextView instructions,ingredients,title;
@@ -45,7 +40,6 @@ public class ShowRecipe extends AppCompatActivity {
     private StorageReference storageRef;
     private StorageReference imageRef;
 
-   // @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

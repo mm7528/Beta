@@ -29,7 +29,6 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -89,6 +88,7 @@ public class ScanRecipe extends AppCompatActivity {
         tv.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
         tv.setText(warning);
         adb.setView(tv);
+        adb.setCancelable(false);
 
         adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
@@ -97,10 +97,19 @@ public class ScanRecipe extends AppCompatActivity {
 
             }
         });
+
+        adb.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                checkCameraPermission();
+            }
+        });
+
         takePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkCameraPermission();
+                adb.show();
+
 
             }
 
@@ -136,11 +145,9 @@ public class ScanRecipe extends AppCompatActivity {
                         @Override
                         public void onSuccess(Text text) {
                             String recognizedText = text.getText();
-                            Toast.makeText(ScanRecipe.this, recognizedText, Toast.LENGTH_LONG).show();
                             Intent si=new Intent(ScanRecipe.this,AddRecipe.class);
                             //seperate the fields of the recipe!
                             si.putExtra("title",getSeparatedText(recognizedText).get(0));
-                            Toast.makeText(ScanRecipe.this, getSeparatedText(recognizedText).get(0), Toast.LENGTH_SHORT).show();
                             si.putExtra("ingredients",getSeparatedText(recognizedText).get(1));
                             si.putExtra("instructions",getSeparatedText(recognizedText).get(2));
                             startActivity(si);
@@ -156,7 +163,6 @@ public class ScanRecipe extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(getApplicationContext(), "Failed preparing image due to: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            //throw new RuntimeException(e);
         }
     }
 
@@ -193,7 +199,7 @@ public class ScanRecipe extends AppCompatActivity {
             if (takePicIntent.resolveActivity(getPackageManager()) != null) {
                 startActivityForResult(takePicIntent, TAKE_A_PIC_CODE);
             }
-            adb.show();
+
         } catch (IOException e) {
             Toast.makeText(ScanRecipe.this, "Failed to create temporary file", Toast.LENGTH_LONG);
             throw new RuntimeException(e);
@@ -229,7 +235,6 @@ public class ScanRecipe extends AppCompatActivity {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] bytes = baos.toByteArray();
-        //imageView.setImageBitmap(imageBitmap);
         ref.putBytes(bytes)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override

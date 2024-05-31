@@ -4,12 +4,13 @@ import static com.example.beta.LoginActivity.fbDB;
 import static com.example.beta.LoginActivity.fbuser;
 import static com.example.beta.LoginActivity.refUsers;
 
-import static java.nio.file.Paths.get;
+
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.FirebaseStorage;
@@ -21,7 +22,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -45,9 +46,9 @@ import java.util.UUID;
 
 public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
-    private Recipe recipe = new Recipe();
+    private Recipe recipe;
     private EditText title,ingredients,instructions;
-    public List<String> options;
+    private List<String> options;
     private String uid,str;
     private String recipeTitle,recipeIngredients,recipeInstructions;
     private boolean connected;
@@ -59,7 +60,7 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
     public static DatabaseReference refRecipes;
 
     private Button upload;
-    public Uri imageUri;
+    private Uri imageUri;
     private FirebaseStorage storage;
     private StorageReference storageReference;
     private StorageReference imageRef;
@@ -69,6 +70,7 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_recipe);
+        recipe = new Recipe();
         title = (EditText) findViewById(R.id.title);
         ingredients = (EditText) findViewById(R.id.ingredients);
         instructions = (EditText) findViewById(R.id.instructions);
@@ -90,7 +92,7 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
             ingredients.setText(recipeIngredients);
             instructions.setText(recipeInstructions);
         }
-
+        fbuser= FirebaseAuth.getInstance().getCurrentUser();
         uid = fbuser.getUid();
         refRecipes= fbDB.getReference("Recipes");
         adb=new AlertDialog.Builder(this);

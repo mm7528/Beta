@@ -9,17 +9,13 @@ import android.view.View;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
-    FirebaseAuth mAuth;
-    private Intent gi;
+    private FirebaseAuth mAuth;
 
-    private String uid;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mAuth=FirebaseAuth.getInstance();
-        gi = getIntent();
-        uid = LoginActivity.fbuser.getUid();
+
 
     }
 

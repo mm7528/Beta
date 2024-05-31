@@ -16,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -26,8 +25,8 @@ import java.util.ArrayList;
 public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private ListView lVcustom;
-    public static ArrayList<String> names, ids;
-    public static ArrayList<StorageReference>images;
+    private ArrayList<String> names, ids;
+    private ArrayList<StorageReference>images;
     private CustomAdapter customAdapter;
     private FirebaseStorage storage;
     private StorageReference storageRef;
@@ -44,7 +43,6 @@ public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemCl
 
         customAdapter = new CustomAdapter(this);
         lVcustom.setOnItemClickListener(this);
-        //lVcustom.setOnItemLongClickListener(this);
 
 
     }
@@ -99,27 +97,4 @@ public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemCl
 
     }
 
-
-
-    //FUNCTION IN NEED OF FIXING
-   /* @Override
-    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long i) {
-        String id =ids.get(position);
-        Query keyIdQuery = refRecipes.orderByChild("keyId").equalTo(id);
-
-        keyIdQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot idSnapshot: dataSnapshot.getChildren()) {
-                    idSnapshot.getRef().removeValue();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(MyRecipes.this, "something failed while trying to delete item", Toast.LENGTH_SHORT).show();
-            }
-        });
-        return false;
-    }*/
 }

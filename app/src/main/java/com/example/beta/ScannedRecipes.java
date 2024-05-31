@@ -73,7 +73,7 @@ public class ScannedRecipes extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(ScannedRecipes.this, "downloading the images failed.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ScannedRecipes.this, "an error occurred while showing the images, please check internet connection", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -86,6 +86,11 @@ public class ScannedRecipes extends AppCompatActivity {
             public void onSuccess(Uri uri) {
                 Glide.with(ScannedRecipes.this).load(uri).into(iv);
 
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(ScannedRecipes.this, "an error occurred while showing the images, please check internet connection", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -105,6 +110,11 @@ public class ScannedRecipes extends AppCompatActivity {
             public void onSuccess(Uri uri) {
                 Glide.with(ScannedRecipes.this).load(uri).into(iv);
 
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(ScannedRecipes.this, "an error occurred while showing the images, please check internet connection", Toast.LENGTH_SHORT).show();
             }
         });
         checkButtons();
