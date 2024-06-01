@@ -140,6 +140,11 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
 
                 }
             }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(AddRecipe.this, "failed to connect to database, please check internet connection", Toast.LENGTH_SHORT).show();
+            }
         });
 
         mGetContent=registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {

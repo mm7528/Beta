@@ -48,6 +48,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * The type Scan recipe.
+ */
 public class ScanRecipe extends AppCompatActivity {
 
 
@@ -137,6 +140,11 @@ public class ScanRecipe extends AppCompatActivity {
     }
 
 
+    /**
+     * input:none.
+     * output:none. The function uses the google ml-kit to recognize the text in the picture and then
+     * forwards the text of the recipe into an activity where the user can edit it
+     */
     private void recognizeTextFromImage() {
         try {
             InputImage inputImage = InputImage.fromFilePath(this, imageUri);
