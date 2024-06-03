@@ -1,6 +1,7 @@
 package com.example.beta;
 
-import static com.example.beta.LoginActivity.fbuser;
+import static com.example.beta.FBDB.fbuser;
+import static com.example.beta.FBDB.storageReference;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -74,18 +75,14 @@ public class ScanRecipe extends AppCompatActivity {
     private final int OPEN_CAMERA_CODE = 1234;
     private final int TAKE_A_PIC_CODE = 2345;
     private TextRecognizer textRecognizer;
-    private FirebaseStorage storage;
     private String currentPath, lastFull;
     private Uri imageUri;
-    private StorageReference storageReference;
     private BroadcastReceiver broadcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_recipe);
-        storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference();
         takePic =(Button) findViewById(R.id.button11);
         recognizeText = (Button) findViewById(R.id.button10);
         textRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);

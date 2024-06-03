@@ -1,5 +1,8 @@
 package com.example.beta;
 
+import static com.example.beta.FBDB.mAuth;
+import static com.example.beta.FBDB.refUsers;
+
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
@@ -27,19 +30,6 @@ import com.google.firebase.database.FirebaseDatabase;
 public class RegisterActivity extends AppCompatActivity {
 
     private Button signup;
-    private FirebaseAuth mAuth;
-    /**
-     * The constant fbuser.
-     */
-    public static FirebaseUser fbuser;
-    /**
-     * The constant fbDB.
-     */
-    public static FirebaseDatabase fbDB;
-    /**
-     * The constant refUsers.
-     */
-    public static DatabaseReference refUsers;
     private User user;
     private EditText editTextPassword,editTextEmail,confirmPassword;
     private BroadcastReceiver broadcastReceiver;
@@ -54,10 +44,6 @@ public class RegisterActivity extends AppCompatActivity {
         confirmPassword=(EditText) findViewById(R.id.password2);
         broadcastReceiver=new InternetReceiver();
 
-        mAuth =FirebaseAuth.getInstance();
-        fbDB=FirebaseDatabase.getInstance();
-        refUsers = fbDB.getReference("Users");
-        fbuser = mAuth.getCurrentUser();
 
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,7 +91,7 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            fbuser=mAuth.getCurrentUser();
+                            //fbuser=mAuth.getCurrentUser();
                             String uid=mAuth.getUid();
                             user=new User(uid,false);
                             refUsers.child(uid).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {

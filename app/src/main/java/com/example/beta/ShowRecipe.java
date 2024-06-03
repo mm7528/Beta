@@ -1,7 +1,8 @@
 package com.example.beta;
 
-import static com.example.beta.AddRecipe.refRecipes;
-import static com.example.beta.LoginActivity.fbDB;
+import static com.example.beta.FBDB.refRecipes;
+import static com.example.beta.FBDB.fbDB;
+import static com.example.beta.FBDB.storageReference;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -36,8 +37,6 @@ public class ShowRecipe extends AppCompatActivity {
     private Button btn;
     private Intent gi;
     private String  recipeTitle, rIngredients, rInstructions, storageId;
-    private FirebaseStorage storage;
-    private StorageReference storageRef;
     private StorageReference imageRef;
 
     @Override
@@ -50,8 +49,6 @@ public class ShowRecipe extends AppCompatActivity {
         title = (TextView) findViewById(R.id.textView6);
         btn =(Button)findViewById(R.id.read);
         iv=(ImageView) findViewById(R.id.imageView2);
-        storage = FirebaseStorage.getInstance();
-        storageRef = storage.getReference();
         gi=getIntent();
         String id =gi.getStringExtra("keyId");
 
@@ -74,7 +71,7 @@ public class ShowRecipe extends AppCompatActivity {
                         rInstructions=lstToStr(recipeInstructions);
                         instructions.setText(rInstructions);
                         storageId=snapshot.child("storageId").getValue(String.class);
-                        imageRef=storageRef.child(storageId);
+                        imageRef=storageReference.child(storageId);
                         imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {

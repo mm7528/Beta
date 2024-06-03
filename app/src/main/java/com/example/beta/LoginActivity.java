@@ -1,5 +1,8 @@
 package com.example.beta;
 
+import static com.example.beta.FBDB.fbuser;
+import static com.example.beta.FBDB.mAuth;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -28,19 +31,7 @@ import com.google.firebase.database.FirebaseDatabase;
  */
 public class LoginActivity extends AppCompatActivity {
 
-    private FirebaseAuth mAuth;
-    /**
-     * The constant fbuser.
-     */
-    public static FirebaseUser fbuser;
-    /**
-     * The constant fbDB.
-     */
-    public static FirebaseDatabase fbDB;
-    /**
-     * The constant refUsers.
-     */
-    public static DatabaseReference refUsers;
+
     private Button login1;
     private EditText editTextPassword,editTextEmail;
     private BroadcastReceiver broadcastReceiver;
@@ -53,10 +44,6 @@ public class LoginActivity extends AppCompatActivity {
         editTextEmail = (EditText) findViewById(R.id.email);
 
         login1 = (Button) findViewById(R.id.login);
-        mAuth =FirebaseAuth.getInstance();
-        fbDB=FirebaseDatabase.getInstance();
-        refUsers = fbDB.getReference("Users");
-        fbuser = mAuth.getCurrentUser();
         broadcastReceiver=new InternetReceiver();
 
 

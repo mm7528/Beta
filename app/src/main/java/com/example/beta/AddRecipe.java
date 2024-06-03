@@ -1,9 +1,10 @@
 package com.example.beta;
 
-import static com.example.beta.LoginActivity.fbDB;
-import static com.example.beta.LoginActivity.fbuser;
-import static com.example.beta.LoginActivity.refUsers;
-
+import static com.example.beta.FBDB.fbDB;
+import static com.example.beta.FBDB.fbuser;
+import static com.example.beta.FBDB.refRecipes;
+import static com.example.beta.FBDB.refUsers;
+import static com.example.beta.FBDB.storageReference;
 
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -60,12 +61,9 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
     private String[] temp;
     private List<String>lines;
     private AlertDialog.Builder adb;
-    public static DatabaseReference refRecipes;
 
     private Button upload;
     private Uri imageUri;
-    private FirebaseStorage storage;
-    private StorageReference storageReference;
     private StorageReference imageRef;
     private BroadcastReceiver broadcastReceiver;
     private ActivityResultLauncher<String> mGetContent;
@@ -81,8 +79,6 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
         upload=(Button)findViewById(R.id.button9);
         broadcastReceiver=new InternetReceiver();
 
-        storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference();
         //in order to check
         imageRef=null;
 
@@ -96,9 +92,7 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
             ingredients.setText(recipeIngredients);
             instructions.setText(recipeInstructions);
         }
-        fbuser= FirebaseAuth.getInstance().getCurrentUser();
         uid = fbuser.getUid();
-        refRecipes= fbDB.getReference("Recipes");
         adb=new AlertDialog.Builder(this);
         adb.setCancelable(false);
         adb.setTitle("enter the type of recipe");

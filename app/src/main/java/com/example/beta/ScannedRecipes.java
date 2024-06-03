@@ -1,6 +1,7 @@
 package com.example.beta;
 
-import static com.example.beta.LoginActivity.fbuser;
+import static com.example.beta.FBDB.fbuser;
+import static com.example.beta.FBDB.storageReference;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,8 +31,6 @@ public class ScannedRecipes extends AppCompatActivity {
 
     private ImageView iv;
     private Button prev,next;
-    private FirebaseStorage storage;
-    private StorageReference storageRef;
     private StorageReference listRef;
     private String path;
     private LinkedList<StorageReference> pics;
@@ -44,14 +43,11 @@ public class ScannedRecipes extends AppCompatActivity {
         iv = (ImageView) findViewById(R.id.imageView);
         prev = (Button) findViewById(R.id.prev);
         next =(Button) findViewById(R.id.next);
-        storage = FirebaseStorage.getInstance();
-        storageRef=storage.getReference();
         path=fbuser.getUid()+"/"+"scanned/";
-        listRef=storageRef.child(path);
+        listRef=storageReference.child(path);
         pics = new LinkedList<>();
         index=0;
-        prev.setEnabled(false);
-        next.setEnabled(!(index==pics.size()-1));
+
         broadcastReceiver=new InternetReceiver();
 
         listRef.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
@@ -73,7 +69,9 @@ public class ScannedRecipes extends AppCompatActivity {
                         }
 
                     }
+
                 });
+                checkButtons();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -105,7 +103,7 @@ public class ScannedRecipes extends AppCompatActivity {
 
     private void checkButtons() {
         prev.setEnabled(index!=0);
-        next.setEnabled(!(index==pics.size()-1));
+        next.setEnabled(!(index==pics.size()-1||pics.size()<=0));
     }
 
     public void next(View view) {
