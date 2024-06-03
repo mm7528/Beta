@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -27,13 +28,13 @@ import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.mlkit.vision.common.InputImage;
@@ -60,6 +61,7 @@ public class ScanRecipe extends AppCompatActivity {
 
     private Button takePic,recognizeText;
     private AlertDialog.Builder adb;
+    private ImageView iv;
     private String warning="The recipe should be in the next format:\n" +
             "Title(write however you want)\n" +
             "Ingredients:\n" +
@@ -78,7 +80,8 @@ public class ScanRecipe extends AppCompatActivity {
     private String currentPath, lastFull;
     private Uri imageUri;
     private BroadcastReceiver broadcastReceiver;
-
+    private static int count=0;
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,8 +91,8 @@ public class ScanRecipe extends AppCompatActivity {
         textRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
         broadcastReceiver=new InternetReceiver();
         adb=new AlertDialog.Builder(this);
-        adb.setCancelable(false);
-        adb.setTitle("Attention!");
+        iv=(ImageView) findViewById(R.id.iv3);
+        adb.setTitle("Attention");
         TextView tv = new TextView(this);
         tv.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
         tv.setText(warning);
@@ -104,6 +107,7 @@ public class ScanRecipe extends AppCompatActivity {
             }
         });
 
+
         adb.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
@@ -114,7 +118,15 @@ public class ScanRecipe extends AppCompatActivity {
         takePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                adb.show();
+                if(count==0)
+                {
+                    count++;
+                    adb.show();
+                }
+                else {
+                    checkCameraPermission();
+                }
+
 
 
             }
@@ -156,24 +168,30 @@ public class ScanRecipe extends AppCompatActivity {
                         @Override
                         public void onSuccess(Text text) {
                             String recognizedText = text.getText();
-                            Intent si=new Intent(ScanRecipe.this,AddRecipe.class);
-                            //seperate the fields of the recipe!
-                            si.putExtra("title",getSeparatedText(recognizedText).get(0));
-                            si.putExtra("ingredients",getSeparatedText(recognizedText).get(1));
-                            si.putExtra("instructions",getSeparatedText(recognizedText).get(2));
-                            startActivity(si);
+                            if(!recognizedText.isEmpty())
+                            {
+                                Intent si=new Intent(ScanRecipe.this,AddRecipe.class);
+                                //seperate the fields of the recipe!
+                                si.putExtra("title",getSeparatedText(recognizedText).get(0));
+                                si.putExtra("ingredients",getSeparatedText(recognizedText).get(1));
+                                si.putExtra("instructions",getSeparatedText(recognizedText).get(2));
+                                startActivity(si);
+                            }
+                            else {
+                                Toast.makeText(ScanRecipe.this, "failed to recognize text", Toast.LENGTH_SHORT).show();
+                            }
 
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getApplicationContext(), "Failed recognizing text due to:" + e.getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "failed to recognize text" , Toast.LENGTH_LONG).show();
                         }
                     });
 
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(getApplicationContext(), "Failed preparing image due to: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "failed to recognize text " , Toast.LENGTH_LONG).show();
         }
     }
 
@@ -181,18 +199,61 @@ public class ScanRecipe extends AppCompatActivity {
     private void checkCameraPermission()
     {
         if(ContextCompat.checkSelfPermission(ScanRecipe.this, Manifest.permission.CAMERA)
-                    != PackageManager.PERMISSION_GRANTED
-                    || ContextCompat.checkSelfPermission(ScanRecipe.this, Manifest.permission.READ_EXTERNAL_STORAGE)!=
-                    PackageManager.PERMISSION_GRANTED)
+                != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(ScanRecipe.this, Manifest.permission.READ_EXTERNAL_STORAGE)!=
+                PackageManager.PERMISSION_GRANTED)
+
         {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(ScanRecipe.this,
+                    Manifest.permission.CAMERA) ||ActivityCompat.shouldShowRequestPermissionRationale(ScanRecipe.this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+
+                // This is Case 4.
+
                 ActivityCompat.requestPermissions(ScanRecipe.this, new String[]{
                         Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE
                 } ,OPEN_CAMERA_CODE);
-        }
-        else {
-                takeApic();
+            } else {
+                // This is Case 3. Request for permission here
+                ActivityCompat.requestPermissions(ScanRecipe.this, new String[]{
+                        Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE
+                } ,OPEN_CAMERA_CODE);
             }
 
+        }
+        else {
+            takeApic();
+        }
+
+
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED&&grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+            takeApic();
+            // This is Case 2 (Permission is now granted)
+        } else {
+            // This is Case 1 again as Permission is not granted by user
+
+            //Now further we check if used denied permanently or not
+            if (ActivityCompat.shouldShowRequestPermissionRationale(ScanRecipe.this,
+                    Manifest.permission.CAMERA) ||ActivityCompat.shouldShowRequestPermissionRationale(ScanRecipe.this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                // case 4 User has denied permission but not permanently
+                ActivityCompat.requestPermissions(ScanRecipe.this, new String[]{
+                        Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE
+                } ,OPEN_CAMERA_CODE);
+
+            } else {
+                // case 5. Permission denied permanently.
+                // You can open Permission setting's page from here now.
+
+                Toast.makeText(this, "can't open camera, please check permissions", Toast.LENGTH_SHORT).show();
+            }
+
+        }
     }
 
     private void takeApic() {
@@ -217,14 +278,6 @@ public class ScanRecipe extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode==OPEN_CAMERA_CODE&&grantResults[1]== PackageManager.PERMISSION_GRANTED)
-        {
-            takeApic();
-        }
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -246,11 +299,11 @@ public class ScanRecipe extends AppCompatActivity {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] bytes = baos.toByteArray();
+        iv.setImageBitmap(imageBitmap);
         ref.putBytes(bytes)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Toast.makeText(ScanRecipe.this, "Image Uploaded", Toast.LENGTH_LONG).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

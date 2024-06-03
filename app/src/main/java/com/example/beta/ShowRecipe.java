@@ -4,7 +4,10 @@ import static com.example.beta.FBDB.refRecipes;
 import static com.example.beta.FBDB.fbDB;
 import static com.example.beta.FBDB.storageReference;
 
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -36,6 +39,7 @@ public class ShowRecipe extends AppCompatActivity {
     private TextToSpeech textToSpeech;
     private Button btn;
     private Intent gi;
+    private BroadcastReceiver broadcastReceiver;
     private String  recipeTitle, rIngredients, rInstructions, storageId;
     private StorageReference imageRef;
 
@@ -51,6 +55,7 @@ public class ShowRecipe extends AppCompatActivity {
         iv=(ImageView) findViewById(R.id.imageView2);
         gi=getIntent();
         String id =gi.getStringExtra("keyId");
+        broadcastReceiver=new InternetReceiver();
 
 
         refRecipes.addValueEventListener(new ValueEventListener() {
@@ -140,6 +145,16 @@ public class ShowRecipe extends AppCompatActivity {
             str+="\n";
         }
         return str;
+    }
+
+    protected void onStart() {
+        super.onStart();
+        registerReceiver(broadcastReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(broadcastReceiver);
     }
 
 }

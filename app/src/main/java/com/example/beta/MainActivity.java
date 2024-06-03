@@ -4,17 +4,22 @@ import static com.example.beta.FBDB.mAuth;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
 
 
 public class MainActivity extends AppCompatActivity {
+    private BroadcastReceiver broadcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        broadcastReceiver=new InternetReceiver();
 
 
     }
@@ -44,5 +49,15 @@ public class MainActivity extends AppCompatActivity {
     public void scan(View view) {
         Intent si = new Intent(MainActivity.this,ScanRecipe.class);
         startActivity(si);
+    }
+
+    protected void onStart() {
+        super.onStart();
+        registerReceiver(broadcastReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(broadcastReceiver);
     }
 }

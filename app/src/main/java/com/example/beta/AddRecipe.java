@@ -26,11 +26,15 @@ import androidx.annotation.NonNull;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -61,7 +65,7 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
     private String[] temp;
     private List<String>lines;
     private AlertDialog.Builder adb;
-
+    private final int OPEN_GALLERY_CODE = 1234;
     private Button upload;
     private Uri imageUri;
     private StorageReference imageRef;
@@ -99,6 +103,7 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
         EditText et = new EditText(this);
         et.setHint("add type");
         adb.setView(et);
+
         adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -156,12 +161,65 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mGetContent.launch("image/*");
+                checkGalleryPermission();
+
             }
 
 
         });
 
+    }
+
+    private void checkGalleryPermission() {
+        if(ContextCompat.checkSelfPermission(AddRecipe.this, android.Manifest.permission.READ_EXTERNAL_STORAGE)!=
+                PackageManager.PERMISSION_GRANTED)
+
+        {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(AddRecipe.this,
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+
+                // This is Case 4.
+
+                ActivityCompat.requestPermissions(AddRecipe.this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE
+                } ,OPEN_GALLERY_CODE);
+            } else {
+                // This is Case 3. Request for permission here
+                ActivityCompat.requestPermissions(AddRecipe.this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE
+                } ,OPEN_GALLERY_CODE);
+            }
+
+        }
+        else {
+            mGetContent.launch("image/*");
+        }
+
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            mGetContent.launch("image/*");
+            // This is Case 2 (Permission is now granted)
+        } else {
+            // This is Case 1 again as Permission is not granted by user
+
+            //Now further we check if used denied permanently or not
+            if (ActivityCompat.shouldShowRequestPermissionRationale(AddRecipe.this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                // case 4 User has denied permission but not permanently
+
+                ActivityCompat.requestPermissions(AddRecipe.this, new String[]{
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                } ,OPEN_GALLERY_CODE);
+
+            } else {
+                // case 5. Permission denied permanently.
+                // You can open Permission setting's page from here now.
+                Toast.makeText(this, "cant open gallery", Toast.LENGTH_SHORT).show();
+            }
+
+        }
     }
 
     public void newRecipe(View view) {
