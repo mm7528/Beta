@@ -1,7 +1,10 @@
 package com.example.beta;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -39,7 +42,7 @@ public class RegisterActivity extends AppCompatActivity {
     public static DatabaseReference refUsers;
     private User user;
     private EditText editTextPassword,editTextEmail,confirmPassword;
-
+    private BroadcastReceiver broadcastReceiver;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,7 @@ public class RegisterActivity extends AppCompatActivity {
         editTextPassword = (EditText) findViewById(R.id.password1);
         editTextEmail = (EditText) findViewById(R.id.email1);
         confirmPassword=(EditText) findViewById(R.id.password2);
+        broadcastReceiver=new InternetReceiver();
 
         mAuth =FirebaseAuth.getInstance();
         fbDB=FirebaseDatabase.getInstance();
@@ -142,5 +146,15 @@ public class RegisterActivity extends AppCompatActivity {
     public void login(View view) {
         Intent si = new Intent(RegisterActivity.this,LoginActivity.class);
         startActivity(si);
+    }
+
+    protected void onStart() {
+        super.onStart();
+        registerReceiver(broadcastReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(broadcastReceiver);
     }
 }

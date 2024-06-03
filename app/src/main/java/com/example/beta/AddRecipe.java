@@ -26,8 +26,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -64,7 +67,7 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
     private FirebaseStorage storage;
     private StorageReference storageReference;
     private StorageReference imageRef;
-
+    private BroadcastReceiver broadcastReceiver;
     private ActivityResultLauncher<String> mGetContent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +79,7 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
         instructions = (EditText) findViewById(R.id.instructions);
         spin =(Spinner) findViewById(R.id.spinner);
         upload=(Button)findViewById(R.id.button9);
+        broadcastReceiver=new InternetReceiver();
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
@@ -283,5 +287,15 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
             lines.add(arr[i]);
         }
         return lines;
+    }
+
+    protected void onStart() {
+        super.onStart();
+        registerReceiver(broadcastReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(broadcastReceiver);
     }
 }

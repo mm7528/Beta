@@ -6,7 +6,10 @@ import static com.example.beta.LoginActivity.fbuser;
 import static com.example.beta.LoginActivity.refUsers;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -44,7 +47,7 @@ public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemCl
     private StorageReference imageRef;
     private List<String> options;
     private Spinner spinner;
-
+    private BroadcastReceiver broadcastReceiver;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,7 @@ public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemCl
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
         spinner = (Spinner) findViewById(R.id.spin2);
+        broadcastReceiver=new InternetReceiver();
         initAll();
 
         customAdapter = new CustomAdapter(this);
@@ -204,4 +208,13 @@ public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemCl
 
     }
 
+    protected void onStart() {
+        super.onStart();
+        registerReceiver(broadcastReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(broadcastReceiver);
+    }
 }

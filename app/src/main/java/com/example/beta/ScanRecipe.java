@@ -11,11 +11,14 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -75,6 +78,8 @@ public class ScanRecipe extends AppCompatActivity {
     private String currentPath, lastFull;
     private Uri imageUri;
     private StorageReference storageReference;
+    private BroadcastReceiver broadcastReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +89,7 @@ public class ScanRecipe extends AppCompatActivity {
         takePic =(Button) findViewById(R.id.button11);
         recognizeText = (Button) findViewById(R.id.button10);
         textRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
+        broadcastReceiver=new InternetReceiver();
         adb=new AlertDialog.Builder(this);
         adb.setCancelable(false);
         adb.setTitle("Attention!");
@@ -274,6 +280,16 @@ public class ScanRecipe extends AppCompatActivity {
         substring =text.substring(place+13,text.length()-1);
         recipe.add(substring);
         return recipe;
+    }
+
+    protected void onStart() {
+        super.onStart();
+        registerReceiver(broadcastReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(broadcastReceiver);
     }
 }
 

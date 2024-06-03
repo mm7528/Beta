@@ -5,6 +5,9 @@ import static com.example.beta.LoginActivity.fbuser;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -33,6 +36,7 @@ public class ScannedRecipes extends AppCompatActivity {
     private String path;
     private LinkedList<StorageReference> pics;
     private int index;
+    private BroadcastReceiver broadcastReceiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +52,7 @@ public class ScannedRecipes extends AppCompatActivity {
         index=0;
         prev.setEnabled(false);
         next.setEnabled(!(index==pics.size()-1));
+        broadcastReceiver=new InternetReceiver();
 
         listRef.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override
@@ -118,5 +123,15 @@ public class ScannedRecipes extends AppCompatActivity {
             }
         });
         checkButtons();
+    }
+
+    protected void onStart() {
+        super.onStart();
+        registerReceiver(broadcastReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(broadcastReceiver);
     }
 }
