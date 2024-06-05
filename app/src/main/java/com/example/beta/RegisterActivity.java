@@ -93,16 +93,12 @@ public class RegisterActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             //fbuser=mAuth.getCurrentUser();
                             String uid=mAuth.getUid();
-                            user=new User(uid,false);
+                            user=new User(uid);
                             refUsers.child(uid).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful())
                                     {
-                                        Toast.makeText(getApplicationContext(),
-                                                        "Registration successful!",
-                                                        Toast.LENGTH_LONG)
-                                                .show();
                                         Intent si = new Intent(RegisterActivity.this,LoginActivity.class);
                                         startActivity(si);
 
@@ -111,7 +107,12 @@ public class RegisterActivity extends AppCompatActivity {
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(RegisterActivity.this, "failed to connect to database", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(
+                                                    getApplicationContext(),
+                                                    "Registration failed!!"
+                                                            + " Please try again later",
+                                                    Toast.LENGTH_LONG)
+                                            .show();
                                 }
                             });
 

@@ -59,7 +59,6 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
     private List<String> options;
     private String uid,str;
     private String recipeTitle,recipeIngredients,recipeInstructions;
-    private boolean connected;
     private Intent gi;
     private Spinner spin;
     private String[] temp;
@@ -71,6 +70,7 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
     private StorageReference imageRef;
     private BroadcastReceiver broadcastReceiver;
     private ActivityResultLauncher<String> mGetContent;
+    private boolean isDismissed=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,6 +120,12 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
 
             }
         });
+        adb.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                isDismissed=true;
+            }
+        });
         refUsers.child(uid).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -131,7 +137,6 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
                     if(task.getResult().getValue() instanceof java.util.Map)
                     {
                         options= (List<String>) ((Map<?, ?>) task.getResult().getValue()).get("types");
-                        connected = (Boolean) ((Map<?, ?>) task.getResult().getValue()).get("connected");
                         options.add("other");
                         spin.setOnItemSelectedListener(AddRecipe.this);
 
@@ -216,7 +221,7 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
             } else {
                 // case 5. Permission denied permanently.
                 // You can open Permission setting's page from here now.
-                Toast.makeText(this, "cant open gallery", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "can't open gallery, please check permissions", Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -226,7 +231,7 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
         String t = title.getText().toString();
         String ing = ingredients.getText().toString();
         String ins = instructions.getText().toString();
-        if(t==null || ing == null || ins==null)
+        if(t.isEmpty() || ing.isEmpty() || ins.isEmpty())
         {
             Toast.makeText(this, "some fields are empty please fill the up!", Toast.LENGTH_SHORT).show();
         }
@@ -255,11 +260,6 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
 
                     }
                 }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(AddRecipe.this, "failed to connect to database", Toast.LENGTH_SHORT).show();
-                }
             });
 
 
@@ -267,20 +267,13 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
             int s = options.size()-1;
             List<String> l = new ArrayList<>(options);
             l.set(s,str);
-            User usr = new User(uid,connected,l);
+            User usr = new User(uid,l);
             refUsers.child(uid).setValue(usr).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
-                    if(task.isSuccessful())
-                    {
+                    if (task.isSuccessful()) {
                         Toast.makeText(AddRecipe.this, "successfully uploaded user", Toast.LENGTH_SHORT).show();
-
                     }
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(AddRecipe.this, "failed to connect to database", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -294,12 +287,20 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if(options.get(position).equals("other"))
+        if(options.get(position).equals("other")&&(isDismissed==true||str.isEmpty()))
+        {
+            recipe.setType(options.get(0));
+
+        }
+        else if(options.get(position).equals("other"))
         {
             adb.show();
 
         }
-        recipe.setType(options.get(position));
+        else {
+            recipe.setType(options.get(position));
+        }
+
 
     }
 
@@ -321,11 +322,6 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Toast.makeText(getApplicationContext(), "image uploaded", Toast.LENGTH_LONG).show();
-                    }
-                })      .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(), "Failed to upload", Toast.LENGTH_LONG).show();
                     }
                 });
 

@@ -20,22 +20,6 @@ public class Recipe {
 
     }
 
-    public Recipe(String type,String title,String uid,String storageId,List<String>ingredients,List<String>instructions)
-    {
-        this.type=type;
-        this.title=title;
-        this.uid=uid;
-        this.storageId=storageId;
-        this.ingredients=ingredients;
-        this.instructions=instructions;
-    }
-
-    public Recipe(String keyId, String uid,String storageId){
-        this.keyId=keyId;
-        this.uid=uid;
-        this.storageId=storageId;
-    }
-
     public String getType()
     {
         return type;

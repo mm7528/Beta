@@ -63,6 +63,7 @@ public class ScanRecipe extends AppCompatActivity {
     private AlertDialog.Builder adb;
     private ImageView iv;
     private String warning="The recipe should be in the next format:\n" +
+            "English letters only\n"+
             "Title(write however you want)\n" +
             "Ingredients:\n" +
             "1\n" +
@@ -73,7 +74,7 @@ public class ScanRecipe extends AppCompatActivity {
             "2\n" +
             "3\n" +
             "please note that the recipe must include all the mentioned characters\n" +
-            "such as ':' and the words 'Instructions' and 'Ingredients' with capital I's";
+            "such as the words 'Instructions' and 'Ingredients' with capital I's";
     private final int OPEN_CAMERA_CODE = 1234;
     private final int TAKE_A_PIC_CODE = 2345;
     private TextRecognizer textRecognizer;
@@ -304,12 +305,7 @@ public class ScanRecipe extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        Toast.makeText(ScanRecipe.this, "Upload failed", Toast.LENGTH_LONG).show();
+                        Toast.makeText(ScanRecipe.this, "Image Uploaded", Toast.LENGTH_SHORT).show();
                     }
                 });
 

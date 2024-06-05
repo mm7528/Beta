@@ -101,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                     // sign-in failed
                                     Toast.makeText(getApplicationContext(),
-                                                    "Login failed!!",
+                                                    "Login failed!! please check password and email",
                                                     Toast.LENGTH_LONG)
                                             .show();
 
