@@ -27,6 +27,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+/**
+ * The type Register activity.
+ */
 public class RegisterActivity extends AppCompatActivity {
 
     private Button signup;
@@ -54,6 +57,10 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * the function registers the new user and creates a new user account
+     * if all fields are correct, else it creates an error message
+     */
     private void registerNewUser()
     {
         String email, password,confirm;
@@ -130,6 +137,11 @@ public class RegisterActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * an On click that forwards the user to the LoginActivity
+     *
+     * @param view the view
+     */
     public void login(View view) {
         Intent si = new Intent(RegisterActivity.this,LoginActivity.class);
         startActivity(si);

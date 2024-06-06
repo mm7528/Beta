@@ -52,6 +52,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * The type Add recipe.
+ */
 public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
     private Recipe recipe;
@@ -175,6 +178,9 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
 
     }
 
+    /**
+     *checks permissions and forwards the user to the gallery if granted
+     */
     private void checkGalleryPermission() {
         if(ContextCompat.checkSelfPermission(AddRecipe.this, android.Manifest.permission.READ_EXTERNAL_STORAGE)!=
                 PackageManager.PERMISSION_GRANTED)
@@ -200,6 +206,15 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
 
     }
 
+    /**
+     * checks permissions by the requestCode
+     * @param requestCode The request code passed in
+     * @param permissions The requested permissions. Never null.
+     * @param grantResults The grant results for the corresponding permissions
+     *     which is either {@link android.content.pm.PackageManager#PERMISSION_GRANTED}
+     *     or {@link android.content.pm.PackageManager#PERMISSION_DENIED}. Never null.
+     *
+     */
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -227,6 +242,11 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
         }
     }
 
+    /**
+     * creates a new recipe with all the given information the user chose
+     *
+     * @param view the view
+     */
     public void newRecipe(View view) {
         String t = title.getText().toString();
         String ing = ingredients.getText().toString();
@@ -285,6 +305,14 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
 
     }
 
+    /**
+     * checks which type was chosen and acts accordingly
+     *
+     * @param parent The AdapterView where the selection happened
+     * @param view The view within the AdapterView that was clicked
+     * @param position The position of the view in the adapter
+     * @param id The row id of the item that is selected
+     */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if(options.get(position).equals("other")&&(isDismissed==true||str.isEmpty()))
@@ -304,13 +332,19 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
 
     }
 
+    /**
+     *
+     * @param parent The AdapterView that now contains no selected item.
+     */
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
 
 
-
+    /**
+     * uploads the recipe picture to the Firebase Storage
+     */
     private void uploadPicture() {
         String id =fbuser.getUid();
         final String randomKey = UUID.randomUUID().toString();
@@ -327,6 +361,11 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
 
     }
 
+    /**
+     * converts the string array to a string list
+     * @param arr
+     * @return a list of the same strings
+     */
     private List<String> arrToList(String[] arr)
     {
         List<String>lines=new ArrayList<>();

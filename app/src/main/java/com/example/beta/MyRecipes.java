@@ -34,6 +34,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The type My recipes.
+ */
 public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemClickListener,AdapterView.OnItemSelectedListener {
 
     private ListView lVcustom;
@@ -88,6 +91,9 @@ public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemCl
 
     }
 
+    /**
+     * the function initiates all the custom adapter of the listView
+     */
     private void initAll(){
         lVcustom = findViewById(R.id.lv);
         names=new ArrayList<>();
@@ -135,6 +141,15 @@ public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemCl
 
     }
 
+    /**
+     *
+     * @param parent The AdapterView where the click happened.
+     * @param view The view within the AdapterView that was clicked (this
+     *            will be a view provided by the adapter)
+     * @param position The position of the view in the adapter.
+     * @param id The row id of the item that was clicked.
+     * checks which recipe from the list was chosen and starts new activity that shows this recipe
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent si = new Intent(MyRecipes.this,ShowRecipe.class);
@@ -143,6 +158,12 @@ public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemCl
 
     }
 
+    /**
+     * the function creates a filter for the listView by
+     * searching for the recipes from the specific type
+     *
+     * @param type the type of the recipe
+     */
     public void filter(String type) {
         ArrayList<Integer> indexes=new ArrayList<>();
         customAdapter = new CustomAdapter(this);
@@ -175,6 +196,8 @@ public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemCl
      * @param view     The view within the AdapterView that was clicked
      * @param position The position of the view in the adapter
      * @param id       The row id of the item that is selected
+     *
+     * the function checks which spinner item was chosen and act accordingly
      */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -200,6 +223,7 @@ public class MyRecipes extends AppCompatActivity implements AdapterView.OnItemCl
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
 
     protected void onStart() {
         super.onStart();

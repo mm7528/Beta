@@ -6,6 +6,12 @@ import android.net.NetworkInfo;
 
 public class CheckInternet {
 
+    /**
+     * Gets network info.
+     *
+     * @param context the context
+     * @return the network info
+     */
     public static boolean getNetworkInfo(Context context)
     {
         boolean status = false;

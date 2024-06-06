@@ -27,6 +27,9 @@ import java.util.LinkedList;
 
 import java.util.function.Consumer;
 
+/**
+ * The type Scanned recipes.
+ */
 public class ScannedRecipes extends AppCompatActivity {
 
     private ImageView iv;
@@ -82,6 +85,11 @@ public class ScannedRecipes extends AppCompatActivity {
 
     }
 
+    /**
+     * the on click that shows the previous scanned recipe
+     *
+     * @param view the view
+     */
     public void prev(View view) {
         index--;
         pics.get(index).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -101,11 +109,19 @@ public class ScannedRecipes extends AppCompatActivity {
 
     }
 
+    /**
+     * checks if the buttons can be clicked
+     */
     private void checkButtons() {
         prev.setEnabled(index!=0);
         next.setEnabled(!(index==pics.size()-1||pics.size()<=0));
     }
 
+    /**
+     * the on click that shows the next scanned recipe
+     *
+     * @param view the view
+     */
     public void next(View view) {
         index++;
         pics.get(index).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {

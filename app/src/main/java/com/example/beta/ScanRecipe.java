@@ -158,7 +158,8 @@ public class ScanRecipe extends AppCompatActivity {
 
     /**
      * input:none.
-     * output:none. The function uses the google ml-kit to recognize the text in the picture and then
+     * output:none.
+     * The function uses the google ml-kit to recognize the text in the picture and then
      * forwards the text of the recipe into an activity where the user can edit it
      */
     private void recognizeTextFromImage() {
@@ -197,6 +198,9 @@ public class ScanRecipe extends AppCompatActivity {
     }
 
 
+    /**
+     * the function checks permissions and forwards to camera
+     */
     private void checkCameraPermission()
     {
         if(ContextCompat.checkSelfPermission(ScanRecipe.this, Manifest.permission.CAMERA)
@@ -229,6 +233,15 @@ public class ScanRecipe extends AppCompatActivity {
 
     }
 
+    /**
+     * checks permissions by the requestCode
+     * @param requestCode The request code passed in
+     * @param permissions The requested permissions. Never null.
+     * @param grantResults The grant results for the corresponding permissions
+     *     which is either {@link android.content.pm.PackageManager#PERMISSION_GRANTED}
+     *     or {@link android.content.pm.PackageManager#PERMISSION_DENIED}. Never null.
+     *
+     */
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -257,6 +270,10 @@ public class ScanRecipe extends AppCompatActivity {
         }
     }
 
+    /**
+     * the function creates an internal file where the pic will be stored and
+     * forwards the user to a function that opens the camera
+     */
     private void takeApic() {
 
         // creating local temporary file to store the full resolution photo
@@ -280,6 +297,17 @@ public class ScanRecipe extends AppCompatActivity {
     }
 
 
+    /**
+     * the functions opens the camera to take a picture
+     * @param requestCode The integer request code originally supplied to
+     *                    startActivityForResult(), allowing you to identify who this
+     *                    result came from.
+     * @param resultCode The integer result code returned by the child activity
+     *                   through its setResult().
+     * @param data An Intent, which can return result data to the caller
+     *               (various data can be attached to Intent "extras").
+     *
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -290,6 +318,10 @@ public class ScanRecipe extends AppCompatActivity {
         }
     }
 
+    /**
+     * the function uploads the scanned recipe to Firebase Storage
+     * @param data
+     */
     private void uploadImage(Intent data)
     {
         Date date = Calendar.getInstance().getTime();
@@ -310,7 +342,12 @@ public class ScanRecipe extends AppCompatActivity {
                 });
 
     }
-    
+
+    /**
+     * the function separates the text of the recipe by format
+     * @param text
+     * @return
+     */
     private List<String> getSeparatedText(String text)
     {
         List<String> recipe = new ArrayList<>();

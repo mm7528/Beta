@@ -58,7 +58,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * the function logs in the  user,
+     * if all fields are correct, else it creates an error message
+     */
     private void loginUserAccount() {
         String email,password;
         email = String.valueOf(editTextEmail.getText());
@@ -113,6 +116,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * On click function that forwards the user to RegisterActivity
+     *
+     * @param view the view
+     */
     public void register(View view) {
         Intent si = new Intent(LoginActivity.this,RegisterActivity.class);
         startActivity(si);

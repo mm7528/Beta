@@ -132,6 +132,11 @@ public class ShowRecipe extends AppCompatActivity {
         });
     }
 
+    /**
+     * the function converts a String List to a one long string
+     * @param lst
+     * @return
+     */
     private String lstToStr(List<String> lst)
     {
         String str="";

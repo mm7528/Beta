@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 public class InternetReceiver extends BroadcastReceiver {
     /**
+     * makes a toast to inform the user when there isn't internet connection
      * @param context The Context in which the receiver is running.
      * @param intent  The Intent being received.
      */
