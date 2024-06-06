@@ -85,7 +85,7 @@ public class ShowRecipe extends AppCompatActivity {
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(ShowRecipe.this, "failed to download recipe image", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ShowRecipe.this, "an error occurred please try again.", Toast.LENGTH_SHORT).show();
                             }
                         });
 
@@ -117,11 +117,7 @@ public class ShowRecipe extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(title.getText().toString().isEmpty())
-                {
-                    Toast.makeText(getApplicationContext(), "please enter text", Toast.LENGTH_LONG).show();
-                }
-                else if(textToSpeech.isSpeaking())
+                if(textToSpeech.isSpeaking())
                 {
                     textToSpeech.stop();
                 }

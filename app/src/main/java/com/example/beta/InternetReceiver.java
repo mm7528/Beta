@@ -12,8 +12,8 @@ public class InternetReceiver extends BroadcastReceiver {
      */
     @Override
     public void onReceive(Context context, Intent intent) {
-        String status = CheckInternet.getNetworkInfo(context);
-        if(!status.equals("connected"))
+        boolean status = CheckInternet.getNetworkInfo(context);
+        if(status==false)
         {
             Toast.makeText(context, "please connect to network, without network connection the app will not work properly", Toast.LENGTH_LONG).show();
         }

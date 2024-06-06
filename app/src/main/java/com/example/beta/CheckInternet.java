@@ -6,17 +6,17 @@ import android.net.NetworkInfo;
 
 public class CheckInternet {
 
-    public static String getNetworkInfo(Context context)
+    public static boolean getNetworkInfo(Context context)
     {
-        String status = null;
+        boolean status = false;
         ConnectivityManager connectivityManager=(ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo=connectivityManager.getActiveNetworkInfo();
         if (networkInfo!=null)
         {
-            status="connected";
+            status=true;
         }
         else {
-            status="disconnected";
+            status=false;
         }
         return status;
     }
