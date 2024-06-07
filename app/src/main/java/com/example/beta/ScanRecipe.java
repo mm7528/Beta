@@ -81,7 +81,9 @@ public class ScanRecipe extends AppCompatActivity {
     private String currentPath, lastFull;
     private Uri imageUri;
     private BroadcastReceiver broadcastReceiver;
+    private byte[] bytes;
     private static int count=0;
+    private StorageReference ref;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,12 +174,22 @@ public class ScanRecipe extends AppCompatActivity {
                             String recognizedText = text.getText();
                             if(!recognizedText.isEmpty())
                             {
+                                ref.putBytes(bytes)
+                                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                            @Override
+                                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                                Toast.makeText(ScanRecipe.this, "Image Uploaded", Toast.LENGTH_SHORT).show();
+
+                                            }
+
+                                        });
                                 Intent si=new Intent(ScanRecipe.this,AddRecipe.class);
                                 //seperate the fields of the recipe!
                                 si.putExtra("title",getSeparatedText(recognizedText).get(0));
                                 si.putExtra("ingredients",getSeparatedText(recognizedText).get(1));
                                 si.putExtra("instructions",getSeparatedText(recognizedText).get(2));
                                 startActivity(si);
+
                             }
                             else {
                                 Toast.makeText(ScanRecipe.this, "failed to recognize text", Toast.LENGTH_SHORT).show();
@@ -327,19 +339,13 @@ public class ScanRecipe extends AppCompatActivity {
         Date date = Calendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("yyyymmddhhmmss");
         lastFull = dateFormat.format(date);
-        StorageReference ref = storageReference.child(fbuser.getUid()+"/"+"scanned/"+lastFull+".jpg");
+        ref = storageReference.child(fbuser.getUid()+"/"+"scanned/"+lastFull+".jpg");
         Bitmap imageBitmap = BitmapFactory.decodeFile(currentPath);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] bytes = baos.toByteArray();
+        bytes = baos.toByteArray();
         iv.setImageBitmap(imageBitmap);
-        ref.putBytes(bytes)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Toast.makeText(ScanRecipe.this, "Image Uploaded", Toast.LENGTH_SHORT).show();
-                    }
-                });
+
 
     }
 
